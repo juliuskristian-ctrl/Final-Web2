@@ -1,9 +1,9 @@
 package com.example.productcrud.controller;
 
-import com.example.productcrud.model.Category;
 import com.example.productcrud.model.Product;
 import com.example.productcrud.model.User;
 import com.example.productcrud.repository.UserRepository;
+import com.example.productcrud.service.CategoryService;
 import com.example.productcrud.service.ProductService;
 import java.time.LocalDate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,10 +18,12 @@ public class ProductController {
 
     private final ProductService productService;
     private final UserRepository userRepository;
+    private final CategoryService categoryService;
 
-    public ProductController(ProductService productService, UserRepository userRepository) {
+    public ProductController(ProductService productService, UserRepository userRepository, CategoryService categoryService) {
         this.productService = productService;
         this.userRepository = userRepository;
+        this.categoryService = categoryService;
     }
 
     private User getCurrentUser(UserDetails userDetails) {
@@ -63,7 +65,8 @@ public class ProductController {
         Product product = new Product();
         product.setCreatedAt(LocalDate.now());
         model.addAttribute("product", product);
-        model.addAttribute("categories", Category.values());
+        // MENGAMBIL DATA DARI DATABASE, BUKAN DARI ENUM
+        model.addAttribute("categories", categoryService.findAll());
         return "product/form";
     }
 
@@ -74,7 +77,6 @@ public class ProductController {
         User currentUser = getCurrentUser(userDetails);
 
         if (product.getId() != null) {
-            // Edit: pastikan produk milik user ini
             boolean isOwner = productService.findByIdAndOwner(product.getId(), currentUser).isPresent();
             if (!isOwner) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Produk tidak ditemukan.");
@@ -96,7 +98,8 @@ public class ProductController {
         return productService.findByIdAndOwner(id, currentUser)
                 .map(product -> {
                     model.addAttribute("product", product);
-                    model.addAttribute("categories", Category.values());
+                    // MENGAMBIL DATA DARI DATABASE, BUKAN DARI ENUM
+                    model.addAttribute("categories", categoryService.findAll());
                     return "product/form";
                 })
                 .orElseGet(() -> {

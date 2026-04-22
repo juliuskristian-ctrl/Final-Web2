@@ -17,9 +17,10 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 50)
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
+    // --------------------------
 
     private long price;
 
