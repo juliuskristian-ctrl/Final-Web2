@@ -6,6 +6,8 @@ import com.example.productcrud.repository.UserRepository;
 import com.example.productcrud.service.CategoryService;
 import com.example.productcrud.service.ProductService;
 import java.time.LocalDate;
+
+import org.springframework.data.domain.Page; // Tambahan import untuk Pagination
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -37,9 +39,19 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String listProducts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String listProducts(@RequestParam(defaultValue = "1") int page,
+                               @AuthenticationPrincipal UserDetails userDetails,
+                               Model model) {
         User currentUser = getCurrentUser(userDetails);
-        model.addAttribute("products", productService.findAllByOwner(currentUser));
+        int pageSize = 10;
+
+        Page<Product> productPage = productService.getProductsByOwnerPaginated(currentUser, page, pageSize);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("totalItems", productPage.getTotalElements());
+
         return "product/list";
     }
 
@@ -65,7 +77,6 @@ public class ProductController {
         Product product = new Product();
         product.setCreatedAt(LocalDate.now());
         model.addAttribute("product", product);
-        // MENGAMBIL DATA DARI DATABASE, BUKAN DARI ENUM
         model.addAttribute("categories", categoryService.findAll());
         return "product/form";
     }
@@ -98,7 +109,6 @@ public class ProductController {
         return productService.findByIdAndOwner(id, currentUser)
                 .map(product -> {
                     model.addAttribute("product", product);
-                    // MENGAMBIL DATA DARI DATABASE, BUKAN DARI ENUM
                     model.addAttribute("categories", categoryService.findAll());
                     return "product/form";
                 })

@@ -3,6 +3,9 @@ package com.example.productcrud.service;
 import com.example.productcrud.model.Product;
 import com.example.productcrud.model.User;
 import com.example.productcrud.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +18,16 @@ public class ProductService {
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    public Page<Product> getProductsByOwnerPaginated(User owner, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        return productRepository.findByOwner(owner, pageable);
+    }
+
+    public Page<Product> getAllProductsPaginated(int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        return productRepository.findAll(pageable);
     }
 
     public List<Product> findAllByOwner(User owner) {
