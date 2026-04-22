@@ -7,7 +7,7 @@ import com.example.productcrud.service.CategoryService;
 import com.example.productcrud.service.ProductService;
 import java.time.LocalDate;
 
-import org.springframework.data.domain.Page; // Tambahan import untuk Pagination
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -72,12 +72,16 @@ public class ProductController {
                 });
     }
 
+    // PERBAIKAN 1: Menambahkan @AuthenticationPrincipal untuk mendeteksi siapa yang mau nambah produk
     @GetMapping("/products/new")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User currentUser = getCurrentUser(userDetails);
         Product product = new Product();
         product.setCreatedAt(LocalDate.now());
+
         model.addAttribute("product", product);
-        model.addAttribute("categories", categoryService.findAll());
+        // PERBAIKAN 2: Mengubah findAll() menjadi findByUser(currentUser)
+        model.addAttribute("categories", categoryService.findByUser(currentUser));
         return "product/form";
     }
 
@@ -109,7 +113,8 @@ public class ProductController {
         return productService.findByIdAndOwner(id, currentUser)
                 .map(product -> {
                     model.addAttribute("product", product);
-                    model.addAttribute("categories", categoryService.findAll());
+                    // PERBAIKAN 3: Mengubah findAll() menjadi findByUser(currentUser)
+                    model.addAttribute("categories", categoryService.findByUser(currentUser));
                     return "product/form";
                 })
                 .orElseGet(() -> {

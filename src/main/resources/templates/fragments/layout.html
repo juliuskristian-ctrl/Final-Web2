@@ -1,51 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<!-- Header Fragment -->
-<head th:fragment="header">
+<head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product CRUD</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <title th:text="${title}">Product Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Memastikan transisi halus saat hover */
+        .transition-all { transition: all 0.3s ease; }
+    </style>
 </head>
+<body class="flex flex-col min-h-screen bg-gray-50">
 
-<!-- Navbar Fragment -->
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">Product CRUD</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/products}">Products</a>
-                </li>
-            </ul>
-            <div class="d-flex align-items-center" sec:authorize="isAuthenticated()">
-                <span class="text-light me-3">
-                    Halo, <strong th:text="${#authentication.name}">User</strong>
-                </span>
-                <form th:action="@{/logout}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-                </form>
+<nav th:fragment="navbar" class="bg-[#800000] border-b-4 border-sky-400 shadow-md">
+    <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+        <a th:href="@{/}" class="flex items-center space-x-3 hover:opacity-80 transition-all">
+            <div class="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center shadow-inner">
+                <span class="text-white font-black text-xl">P</span>
             </div>
+            <h1 class="text-xl font-bold text-white tracking-tight">
+                Product <span class="text-sky-300">CRUD</span>
+            </h1>
+        </a>
+
+        <div class="flex items-center space-x-4 md:space-x-8">
+            <a th:href="@{/}" class="text-white hover:text-sky-300 font-medium transition-all text-sm md:text-base">Home</a>
+            <a th:href="@{/products}" class="text-white hover:text-sky-300 font-medium transition-all text-sm md:text-base">Produk</a>
+            <a th:href="@{/categories}" class="text-white hover:text-sky-300 font-medium transition-all text-sm md:text-base">Kategori</a>
+
+            <form th:action="@{/logout}" method="post" class="inline">
+                <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-1.5 rounded-full text-xs md:text-sm font-bold shadow-lg transition-all active:scale-95">
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 </nav>
 
-<!-- Footer Fragment -->
-<footer th:fragment="footer">
-    <div class="container">
-        <hr>
-        <p class="text-center text-muted py-3">Product CRUD - Praktikum JPA Fundamentals - 2026</p>
+<footer th:fragment="footer" class="bg-white border-t border-gray-200 py-6 mt-auto">
+    <div class="container mx-auto px-6 text-center">
+        <p class="text-gray-600 text-sm font-medium uppercase tracking-widest">&copy; 2026 Product Manager System</p>
+        <p class="text-gray-400 text-xs mt-1">All Rights Reserved. Kelompok [5] Project Web 2.</p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </footer>
 
+</body>
 </html>

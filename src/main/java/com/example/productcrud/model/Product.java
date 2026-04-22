@@ -17,10 +17,11 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
+    // --- BAGIAN YANG DIPERBAIKI ---
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-    // --------------------------
+    // ------------------------------
 
     private long price;
 

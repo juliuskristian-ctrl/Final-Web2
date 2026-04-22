@@ -1,61 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: header}">
-</head>
-<body>
-    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+<head th:replace="~{fragments/layout :: head('Detail Produk - Product Manager')}"></head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <h2 th:text="${product.name}" class="mb-4">Nama Produk</h2>
+<div th:replace="~{fragments/layout :: navbar}"></div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table table-borderless mb-0">
-                            <tr>
-                                <th class="text-muted" style="width: 200px;">Nama</th>
-                                <td th:text="${product.name}">-</td>
-                            </tr>
-                            <tr>
-                                <th class="text-muted">Kategori</th>
-                                <td th:text="${product.category?.displayName}">-</td>
-                            </tr>
-                            <tr>
-                                <th class="text-muted">Harga</th>
-                                <td th:text="${'Rp ' + #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}">Rp 0</td>
-                            </tr>
-                            <tr>
-                                <th class="text-muted">Stok</th>
-                                <td th:text="${product.stock}">0</td>
-                            </tr>
-                            <tr>
-                                <th class="text-muted">Deskripsi</th>
-                                <td th:text="${product.description}">-</td>
-                            </tr>
-                            <tr>
-                                <th class="text-muted">Status</th>
-                                <td>
-                                    <span th:if="${product.active}" class="badge bg-success">Aktif</span>
-                                    <span th:unless="${product.active}" class="badge bg-danger">Tidak Aktif</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th class="text-muted">Tanggal Dibuat</th>
-                                <td th:text="${product.createdAt}">-</td>
-                            </tr>
-                        </table>
+<main class="container mx-auto px-4 py-12 flex-grow max-w-4xl">
+    <div class="mb-8">
+        <h2 class="text-3xl font-black text-[#800000] border-l-8 border-sky-400 pl-4" th:text="${product.name}">Nama Produk</h2>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+        <div class="bg-[#800000] p-6">
+            <h3 class="text-white font-bold tracking-widest text-sm uppercase">Informasi Detail Barang</h3>
+        </div>
+
+        <div class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Nama Produk</p>
+                        <p class="text-lg font-bold text-gray-800" th:text="${product.name}">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Kategori</p>
+                        <span class="inline-block mt-1 bg-sky-100 text-sky-700 px-3 py-1 rounded-lg text-xs font-bold"
+                              th:text="${product.category?.name}">-</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Status</p>
+                        <div class="mt-1">
+                            <span th:if="${product.active}" class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-xs font-bold uppercase">Aktif</span>
+                            <span th:unless="${product.active}" class="bg-red-100 text-red-700 px-3 py-1 rounded-lg text-xs font-bold uppercase">Tidak Aktif</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="d-flex gap-2 mt-4">
-                    <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-warning">Edit</a>
-                    <a th:href="@{/products}" class="btn btn-secondary">Kembali ke Daftar</a>
+                <div class="space-y-6">
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Harga</p>
+                        <p class="text-2xl font-black text-[#800000]" th:text="${'Rp ' + product.price}"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Stok Tersedia</p>
+                        <p class="text-2xl font-black text-gray-700" th:text="${product.stock} + ' Unit'"></p>
+                    </div>
                 </div>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-100">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-tighter mb-2">Deskripsi Lengkap</p>
+                <p class="text-gray-600 leading-relaxed italic" th:text="${product.description}">-</p>
+                <p class="mt-6 text-[10px] text-gray-400 font-medium italic">Data ini dibuat pada: <span th:text="${product.createdAt}">-</span></p>
             </div>
         </div>
     </div>
 
-    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+        <a th:href="@{/products/{id}/edit(id=${product.id})}"
+           class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-center font-bold py-3 rounded-xl shadow-lg shadow-sky-100 transition-all active:scale-95">
+            Edit Produk
+        </a>
+        <a th:href="@{/products}"
+           class="flex-1 bg-white border-2 border-gray-200 text-gray-500 hover:bg-gray-50 text-center font-bold py-3 rounded-xl transition-all">
+            Kembali ke Daftar
+        </a>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
 </body>
 </html>

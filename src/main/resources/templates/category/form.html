@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${category.id != null ? 'Edit Kategori' : 'Tambah Kategori'} + ' - Product CRUD')}"></head>
+
+<body class="bg-gray-50 flex flex-col min-h-screen">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<main class="container mx-auto px-4 py-12 flex-grow flex items-center justify-center">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border-t-8 border-[#800000]">
+        <div class="p-8 md:p-10">
+            <h2 class="text-3xl font-black text-gray-800 mb-8 border-b pb-4"
+                th:text="${category.id != null ? 'Edit Kategori' : 'Tambah Kategori Baru'}">Form Kategori</h2>
+
+            <form th:action="@{/categories/save}" th:object="${category}" method="post" class="space-y-6">
+                <input type="hidden" th:field="*{id}">
+
+                <div>
+                    <label for="name" class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1 mb-2">Nama Kategori</label>
+                    <input type="text" id="name" th:field="*{name}" required
+                           placeholder="Misal: Elektronik, Makanan, dll"
+                           class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-400 focus:border-transparent outline-none transition-all placeholder:text-gray-300">
+                </div>
+
+                <div>
+                    <label for="description" class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1 mb-2">Deskripsi</label>
+                    <textarea id="description" th:field="*{description}" rows="3"
+                              placeholder="Tambahkan keterangan singkat..."
+                              class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-400 focus:border-transparent outline-none transition-all placeholder:text-gray-300"></textarea>
+                </div>
+
+                <div class="flex items-center space-x-4 pt-6 border-t border-gray-100">
+                    <button type="submit"
+                            class="flex-1 bg-[#800000] hover:bg-[#a00000] text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95">
+                        Simpan Kategori
+                    </button>
+                    <a th:href="@{/categories}"
+                       class="flex-1 text-center text-gray-400 hover:text-gray-600 font-bold py-4 transition-all">
+                        Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
