@@ -24,7 +24,23 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.owner = :owner AND " +
             "(:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CAST(CONCAT('%', :keyword, '%') AS text))) AND " +
             "(:categoryId IS NULL OR p.category.id = :categoryId)")
-    List<Product> searchProductsByOwner(@Param("keyword") String keyword,
+    Page<Product> searchProductsByOwner(@Param("keyword") String keyword,
                                         @Param("categoryId") Long categoryId,
-                                        @Param("owner") User owner);
+                                        @Param("owner") User owner,
+                                        Pageable pageable);
+
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.owner = :owner")
+    long countByOwner(@Param("owner") User owner);
+
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.owner = :owner AND p.active = true")
+    long countActiveByOwner(@Param("owner") User owner);
+
+    @Query("SELECT COALESCE(SUM(p.price * p.stock), 0) FROM Product p WHERE p.owner = :owner")
+    double calculateTotalInventoryValue(@Param("owner") User owner);
+
+    @Query("SELECT p FROM Product p WHERE p.owner = :owner AND p.stock < 5")
+    List<Product> findLowStockByOwner(@Param("owner") User owner);
+
+    @Query("SELECT p.category.name, COUNT(p) FROM Product p WHERE p.owner = :owner GROUP BY p.category.name")
+    List<Object[]> countProductsByCategory(@Param("owner") User owner);
 }

@@ -30,6 +30,14 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
+
+    public Page<Product> searchProductsByOwner(String keyword, Long categoryId, User owner, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        String searchKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword : null;
+
+        return productRepository.searchProductsByOwner(searchKeyword, categoryId, owner, pageable);
+    }
+
     public List<Product> findAllByOwner(User owner) {
         return productRepository.findByOwner(owner);
     }
@@ -45,11 +53,5 @@ public class ProductService {
     public void deleteByIdAndOwner(Long id, User owner) {
         productRepository.findByIdAndOwner(id, owner)
                 .ifPresent(product -> productRepository.delete(product));
-    }
-
-    public List<Product> searchProductsByOwner(String keyword, Long categoryId, User owner) {
-        String searchKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword : null;
-
-        return productRepository.searchProductsByOwner(searchKeyword, categoryId, owner);
     }
 }
