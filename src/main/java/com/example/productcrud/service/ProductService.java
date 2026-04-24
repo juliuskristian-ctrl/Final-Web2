@@ -46,4 +46,10 @@ public class ProductService {
         productRepository.findByIdAndOwner(id, owner)
                 .ifPresent(product -> productRepository.delete(product));
     }
+
+    public List<Product> searchProductsByOwner(String keyword, Long categoryId, User owner) {
+        String searchKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword : null;
+
+        return productRepository.searchProductsByOwner(searchKeyword, categoryId, owner);
+    }
 }

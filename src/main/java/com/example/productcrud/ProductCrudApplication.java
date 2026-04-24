@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProductCrudApplication {
+public class    ProductCrudApplication {
     // Ellen
     // Belicia
     public static void main(String[] args) {

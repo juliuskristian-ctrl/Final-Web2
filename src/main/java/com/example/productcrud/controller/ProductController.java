@@ -6,8 +6,8 @@ import com.example.productcrud.repository.UserRepository;
 import com.example.productcrud.service.CategoryService;
 import com.example.productcrud.service.ProductService;
 import java.time.LocalDate;
+import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -38,19 +38,23 @@ public class ProductController {
         return "redirect:/products";
     }
 
+    // --- FITUR SEARCH & FILTER DI SINI ---
     @GetMapping("/products")
-    public String listProducts(@RequestParam(defaultValue = "1") int page,
+    public String listProducts(@RequestParam(value = "keyword", required = false) String keyword,
+                               @RequestParam(value = "categoryId", required = false) Long categoryId,
                                @AuthenticationPrincipal UserDetails userDetails,
                                Model model) {
         User currentUser = getCurrentUser(userDetails);
-        int pageSize = 10;
 
-        Page<Product> productPage = productService.getProductsByOwnerPaginated(currentUser, page, pageSize);
+        // Memanggil method search yang sudah kita buat di Service tadi
+        List<Product> products = productService.searchProductsByOwner(keyword, categoryId, currentUser);
 
-        model.addAttribute("products", productPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("totalItems", productPage.getTotalElements());
+        model.addAttribute("products", products);
+        model.addAttribute("categories", categoryService.findByUser(currentUser));
+
+        // Mengirimkan kembali keyword dan categoryId agar form di HTML tetap terisi (sticky form)
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
 
         return "product/list";
     }
@@ -72,7 +76,6 @@ public class ProductController {
                 });
     }
 
-    // PERBAIKAN 1: Menambahkan @AuthenticationPrincipal untuk mendeteksi siapa yang mau nambah produk
     @GetMapping("/products/new")
     public String showCreateForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User currentUser = getCurrentUser(userDetails);
@@ -80,7 +83,6 @@ public class ProductController {
         product.setCreatedAt(LocalDate.now());
 
         model.addAttribute("product", product);
-        // PERBAIKAN 2: Mengubah findAll() menjadi findByUser(currentUser)
         model.addAttribute("categories", categoryService.findByUser(currentUser));
         return "product/form";
     }
@@ -113,7 +115,6 @@ public class ProductController {
         return productService.findByIdAndOwner(id, currentUser)
                 .map(product -> {
                     model.addAttribute("product", product);
-                    // PERBAIKAN 3: Mengubah findAll() menjadi findByUser(currentUser)
                     model.addAttribute("categories", categoryService.findByUser(currentUser));
                     return "product/form";
                 })
