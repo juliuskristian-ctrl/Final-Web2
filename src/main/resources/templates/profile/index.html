@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{fragments/layout :: head('Profil Saya')}"></div>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 flex flex-col min-h-screen">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<main class="container mx-auto px-4 md:px-6 flex-grow py-8 max-w-4xl">
+
+    <div class="mb-8">
+        <h2 class="text-3xl font-black text-[#800000]">Profil Saya</h2>
+        <p class="text-sm text-gray-500 font-medium">Kelola informasi akun Anda dan ubah keamanan akun.</p>
+    </div>
+
+    <!-- Alert Success Global -->
+    <div th:if="${success}" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg shadow-sm" role="alert">
+        <p class="font-bold">Berhasil</p>
+        <p th:text="${success}"></p>
+    </div>
+    <div th:if="${successPassword}" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg shadow-sm" role="alert">
+        <p class="font-bold">Berhasil</p>
+        <p th:text="${successPassword}"></p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Kolom Info/Edit Profil -->
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-50">
+            <h4 class="font-bold text-gray-800 mb-6 flex items-center text-xl">
+                <span class="w-2 h-6 bg-sky-500 rounded-full mr-3"></span>
+                Informasi Akun
+            </h4>
+            
+            <div th:if="${errorProfile}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-4 rounded-lg shadow-sm" role="alert">
+                <p class="text-sm" th:text="${errorProfile}"></p>
+            </div>
+            <div th:if="${infoProfile}" class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 mb-4 rounded-lg shadow-sm" role="alert">
+                <p class="text-sm" th:text="${infoProfile}"></p>
+            </div>
+            
+            <form th:action="@{/profile/update}" method="post" th:object="${profileUpdateRequest}">
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-bold text-gray-700 mb-2">Username Saat Ini</label>
+                    <input type="text" id="username" th:field="*{username}" name="username" 
+                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                           required>
+                    <p class="text-xs text-gray-400 mt-2 italic">Perhatian: Mengubah username akan mengharuskan Anda untuk login kembali.</p>
+                </div>
+                
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all active:scale-95">
+                        Simpan Username Baru
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Kolom Ganti Password -->
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-50">
+            <h4 class="font-bold text-gray-800 mb-6 flex items-center text-xl">
+                <span class="w-2 h-6 bg-[#800000] rounded-full mr-3"></span>
+                Ubah Password
+            </h4>
+            
+            <div th:if="${errorPassword}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-4 rounded-lg shadow-sm" role="alert">
+                <p class="text-sm" th:text="${errorPassword}"></p>
+            </div>
+
+            <form th:action="@{/profile/password}" method="post" th:object="${passwordChangeRequest}">
+                <div class="mb-4">
+                    <label for="oldPassword" class="block text-sm font-bold text-gray-700 mb-2">Password Lama</label>
+                    <input type="password" id="oldPassword" th:field="*{oldPassword}" name="oldPassword"
+                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#800000] focus:border-transparent transition-all"
+                           required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="newPassword" class="block text-sm font-bold text-gray-700 mb-2">Password Baru</label>
+                    <input type="password" id="newPassword" th:field="*{newPassword}" name="newPassword"
+                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#800000] focus:border-transparent transition-all"
+                           required>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="confirmPassword" class="block text-sm font-bold text-gray-700 mb-2">Konfirmasi Password Baru</label>
+                    <input type="password" id="confirmPassword" th:field="*{confirmPassword}" name="confirmPassword"
+                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#800000] focus:border-transparent transition-all"
+                           required>
+                </div>
+                
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-[#800000] hover:bg-opacity-90 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all active:scale-95">
+                        Ubah Password
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
