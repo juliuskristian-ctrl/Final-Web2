@@ -1,5 +1,7 @@
 # Product CRUD — Spring Boot + JPA + PostgreSQL
 
+Kelompok 5
+
 Aplikasi CRUD produk sederhana menggunakan Spring Boot, Spring Data JPA, Thymeleaf, dan PostgreSQL.
 Dibuat sebagai boilerplate untuk praktikum **Week 7: JPA Fundamentals** (WEB-202).
 
